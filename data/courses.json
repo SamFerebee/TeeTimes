@@ -1,0 +1,131 @@
+[
+  {
+    "id": "patriot-hills",
+    "name": "Patriot Hills Golf Club",
+    "location": "Stony Point, NY",
+    "bookingUrl": "https://foreupsoftware.com/index.php/booking/23075",
+    "provider": {
+      "type": "foreup",
+      "courseId": 23075,
+      "scheduleIds": [12738],
+      "holes": 18
+    }
+  },
+  {
+    "id": "galloping-hill",
+    "name": "Galloping Hill Golf Course",
+    "location": "Kenilworth, NJ",
+    "bookingUrl": "https://www.golfnow.com/tee-times/facility/5095-galloping-hill-golf-course/search",
+    "provider": {
+      "type": "golfnow",
+      "facilityId": 5095,
+      "latitude": 40.67886,
+      "longitude": -74.28269
+    }
+  },
+  {
+    "id": "new-york-country-club",
+    "name": "New York Country Club",
+    "location": "New Hempstead / Spring Valley, NY",
+    "bookingUrl": "https://new-york-country-club.book.teeitup.com",
+    "provider": {
+      "type": "teeitup",
+      "alias": "new-york-country-club",
+      "facilityIds": [4864],
+      "courseId": "54f14d110c8ad60378b033e7"
+    }
+  },
+  {
+    "id": "spook-rock",
+    "name": "Spook Rock Golf Course",
+    "location": "Montebello / Suffern, NY",
+    "bookingUrl": "https://spook-rock-golf-course.book.teeitup.golf",
+    "provider": {
+      "type": "teeitup",
+      "alias": "spook-rock-golf-course",
+      "facilityIds": [11400],
+      "courseId": "54f14fb40c8ad60378b06cfd"
+    }
+  },
+  {
+    "id": "blue-hill",
+    "name": "Blue Hill Golf Course",
+    "location": "Pearl River, NY",
+    "bookingUrl": "https://blue-hill-golf-course-v2.book.teeitup.golf",
+    "provider": {
+      "type": "teeitup",
+      "alias": "blue-hill-golf-course-v2",
+      "facilityIds": [6865],
+      "courseId": "54f14df90c8ad60378b046c7"
+    }
+  },
+  {
+    "id": "soldier-hill",
+    "name": "Soldier Hill Golf Course",
+    "location": "Emerson, NJ",
+    "bookingUrl": "https://golfbergencounty.com/tee-times",
+    "provider": {
+      "type": "protected",
+      "name": "Bergen County Golf",
+      "reason": "The official Bergen County tee-time portal currently returns a Cloudflare JavaScript/cookie challenge to server-side requests."
+    }
+  },
+  {
+    "id": "darlington",
+    "name": "Darlington Golf Course",
+    "location": "Mahwah, NJ",
+    "bookingUrl": "https://golfbergencounty.com/tee-times",
+    "provider": {
+      "type": "protected",
+      "name": "Bergen County Golf",
+      "reason": "The official Bergen County tee-time portal currently returns a Cloudflare JavaScript/cookie challenge to server-side requests."
+    }
+  },
+  {
+    "id": "valley-brook",
+    "name": "Valley Brook Golf Course",
+    "location": "River Vale, NJ",
+    "bookingUrl": "https://golfbergencounty.com/tee-times",
+    "provider": {
+      "type": "protected",
+      "name": "Bergen County Golf",
+      "reason": "The official Bergen County tee-time portal currently returns a Cloudflare JavaScript/cookie challenge to server-side requests."
+    }
+  },
+  {
+    "id": "river-vale-country-club",
+    "name": "River Vale Country Club",
+    "location": "River Vale, NJ",
+    "bookingUrl": "https://river-vale-country-club.book.teeitup.golf",
+    "provider": {
+      "type": "teeitup",
+      "alias": "river-vale-country-club",
+      "facilityIds": [4695],
+      "courseId": "54f14cfd0c8ad60378b03225"
+    }
+  },
+  {
+    "id": "francis-byrne",
+    "name": "Francis A. Byrne Golf Course",
+    "location": "West Orange, NJ",
+    "bookingUrl": "https://foreupsoftware.com/index.php/booking/22528/11078#/teetimes",
+    "provider": {
+      "type": "foreup",
+      "courseId": 22528,
+      "scheduleIds": [11078],
+      "holes": 18
+    }
+  },
+  {
+    "id": "hendricks-field",
+    "name": "Hendricks Field Golf Course",
+    "location": "Belleville, NJ",
+    "bookingUrl": "https://foreupsoftware.com/index.php/booking/22526/11075#/teetimes",
+    "provider": {
+      "type": "foreup",
+      "courseId": 22526,
+      "scheduleIds": [11075],
+      "holes": 18
+    }
+  }
+]
