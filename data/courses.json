@@ -10,6 +10,7 @@
       "scheduleIds": [
         12738
       ],
+      "bookingClassId": 52384,
       "holes": 18
     }
   },
@@ -125,6 +126,7 @@
       "scheduleIds": [
         11078
       ],
+      "bookingClassId": 49771,
       "holes": 18
     }
   },
@@ -139,6 +141,7 @@
       "scheduleIds": [
         11075
       ],
+      "bookingClassId": 49493,
       "holes": 18
     }
   },

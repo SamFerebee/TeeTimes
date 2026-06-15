@@ -3,6 +3,7 @@ export type ProviderConfig =
       type: 'foreup'
       courseId: number
       scheduleIds: number[]
+      bookingClassId?: number
       holes?: number
     }
   | {

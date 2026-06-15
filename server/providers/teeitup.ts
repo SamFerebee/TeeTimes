@@ -5,10 +5,13 @@ import type { Course, ProviderResult, TeeTime } from '../types'
 type TeeItUpRate = {
   greenFeeWalking?: number
   greenFeeRiding?: number
+  greenFeeCart?: number
   greenFee?: number
   price?: number
   dueOnlineWalking?: number
   dueOnlineRiding?: number
+  transactionFees?: number
+  showTransactionFees?: boolean
   allowedPlayers?: number[]
   golfnow?: {
     GolfFacilityId?: number
@@ -52,9 +55,15 @@ function firstPrice(...values: unknown[]) {
   return undefined
 }
 
+function priceWithFee(basePrice?: number, fee?: number, showFee?: boolean) {
+  if (basePrice === undefined) return undefined
+  if (fee === undefined || showFee === false) return basePrice
+  return basePrice + fee
+}
+
 function priceFrom(slot: TeeItUpSlot) {
   const rate = slot.rates?.[0]
-  return firstPrice(
+  const basePrice = firstPrice(
     rate?.promotion?.greenFeeRiding ??
       rate?.promotion?.greenFeeWalking ??
       rate?.promotion?.price,
@@ -62,9 +71,12 @@ function priceFrom(slot: TeeItUpSlot) {
     rate?.dueOnlineWalking,
     rate?.greenFeeRiding,
     rate?.greenFeeWalking,
+    rate?.greenFeeCart,
     rate?.greenFee,
     rate?.price,
   )
+
+  return priceWithFee(basePrice, centsToDollars(rate?.transactionFees), rate?.showTransactionFees)
 }
 
 function teeTimeBookingUrl(course: Course, startsAt: Date, slot: TeeItUpSlot, availableSpots?: number) {
@@ -73,15 +85,15 @@ function teeTimeBookingUrl(course: Course, startsAt: Date, slot: TeeItUpSlot, av
   }
 
   const url = new URL(course.bookingUrl)
-  const hour = startsAt.getHours()
+  const selectedTime = format(startsAt, 'H:mm')
   const facilityId = slot.rates?.find((rate) => rate.golfnow?.GolfFacilityId)?.golfnow?.GolfFacilityId ?? course.provider.facilityIds[0]
   const holes = Number(slot.holes ?? 18)
   const golfers = Math.max(1, Math.min(Number(availableSpots ?? slot.maxPlayers ?? 4), 4))
 
   url.searchParams.set('date', format(startsAt, 'yyyy-MM-dd'))
   if (facilityId) url.searchParams.set('course', String(facilityId))
-  url.searchParams.set('start', String(hour))
-  url.searchParams.set('end', String(Math.min(hour + 1, 23)))
+  url.searchParams.set('start', selectedTime)
+  url.searchParams.set('end', selectedTime)
   url.searchParams.set('golfers', String(golfers))
   url.searchParams.set('holes', String(holes))
 

@@ -204,10 +204,29 @@ async function detectForeUp(url: URL): Promise<DetectionResult> {
   const parsedDefault = defaultFilter ? JSON.parse(defaultFilter) as { schedule_id?: number; holes?: number } : undefined
   const scheduleId = Number(urlScheduleId ?? parsedDefault?.schedule_id)
   const schedulesRaw = extractJsonArray(html, 'SCHEDULES')
-  const schedules = schedulesRaw ? JSON.parse(schedulesRaw) as Array<{ teesheet_id?: string; course_id?: string; holes?: string; course_name?: string; title?: string }> : []
+  const schedules = schedulesRaw
+    ? JSON.parse(schedulesRaw) as Array<{
+      teesheet_id?: string
+      course_id?: string
+      holes?: string
+      course_name?: string
+      title?: string
+      booking_classes?: Array<{
+        booking_class_id?: string
+        online_booking_protected?: string
+        hidden?: string
+        active?: string
+      }>
+    }>
+    : []
   const schedule = schedules.find((item) => Number(item.teesheet_id) === scheduleId) ?? schedules.find((item) => Number(item.course_id) === courseId) ?? schedules[0]
   const pageName = cleanText(html.match(/PAGE_NAME\s*=\s*'([^']+)'/)?.[1])
   const scheduleName = cleanText(schedule?.course_name || schedule?.title)
+  const bookingClass = schedule?.booking_classes?.find((item) => (
+    item.active !== '0' &&
+    item.hidden !== '1' &&
+    item.online_booking_protected !== '1'
+  )) ?? schedule?.booking_classes?.find((item) => item.active !== '0' && item.hidden !== '1')
 
   if (!courseId || !scheduleId) {
     return detectBlocked(url)
@@ -219,6 +238,7 @@ async function detectForeUp(url: URL): Promise<DetectionResult> {
       type: 'foreup',
       courseId,
       scheduleIds: [scheduleId],
+      bookingClassId: bookingClass?.booking_class_id ? Number(bookingClass.booking_class_id) : undefined,
       holes: Number(schedule?.holes ?? parsedDefault?.holes ?? 18),
     },
     providerName: 'ForeUp',
