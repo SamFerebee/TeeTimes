@@ -53,7 +53,7 @@ export const newCourseSchema = z.object({
   provider: z
     .object({
       type: z.enum(['manual', 'foreup', 'teeitup', 'golfnow', 'protected']).default('manual'),
-      courseId: z.coerce.number().int().positive().optional(),
+      courseId: z.union([z.coerce.number().int().positive(), z.string().min(1)]).optional(),
       scheduleIds: z.array(z.coerce.number().int().positive()).optional(),
       holes: z.coerce.number().int().optional(),
       alias: z.string().optional(),
@@ -97,7 +97,7 @@ export function normalizeNewCourse(input: unknown): Course {
   if (rawProvider.type === 'foreup' && rawProvider.courseId) {
     provider = {
       type: 'foreup',
-      courseId: rawProvider.courseId,
+      courseId: Number(rawProvider.courseId),
       scheduleIds: rawProvider.scheduleIds ?? [],
       holes: rawProvider.holes,
     }
@@ -106,7 +106,7 @@ export function normalizeNewCourse(input: unknown): Course {
       type: 'teeitup',
       alias: rawProvider.alias,
       facilityIds: rawProvider.facilityIds,
-      courseId: rawProvider.courseId,
+      courseId: rawProvider.courseId ? String(rawProvider.courseId) : undefined,
       requiresLogin: rawProvider.requiresLogin,
       loginMessage: rawProvider.loginMessage,
       connectionId: rawProvider.connectionId,
