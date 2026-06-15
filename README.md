@@ -145,6 +145,20 @@ There is no database right now.
 - Tee-time results are cached in server memory for 60 seconds.
 - UI filters are stored in browser/app state and reset on refresh.
 
+## Adding Courses
+
+In the app, click the `+` button near the top.
+
+Paste the course booking URL, then click `Check`.
+
+If the app recognizes the booking site, it will fill in live tee-time support automatically. Supported automatic setup currently works for:
+
+- ForeUp
+- TeeItUp
+- GolfNow
+
+If the app cannot recognize the booking site, the course can still be saved, but it may not show live tee times until a provider is added later.
+
 ## Course Providers
 
 Provider adapters live in `server/providers`.

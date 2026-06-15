@@ -4,6 +4,7 @@ import {
   CalendarDays,
   CalendarRange,
   ChevronDown,
+  CheckCircle2,
   ExternalLink,
   Filter,
   ListOrdered,
@@ -13,6 +14,7 @@ import {
   Search,
   Trash2,
   Users,
+  Wand2,
 } from 'lucide-react'
 import './App.css'
 
@@ -53,6 +55,15 @@ type TeeTimeResponse = {
   generatedAt: string
   teeTimes: TeeTime[]
   sources: SourceStatus[]
+}
+
+type DetectionResult = {
+  status: 'live' | 'manual' | 'blocked'
+  providerName: string
+  message: string
+  name?: string
+  location?: string
+  bookingUrl?: string
 }
 
 const today = new Date().toISOString().slice(0, 10)
@@ -102,6 +113,8 @@ function App() {
   const [error, setError] = useState('')
   const [showAdd, setShowAdd] = useState(false)
   const [newCourse, setNewCourse] = useState({ name: '', location: '', bookingUrl: '' })
+  const [detection, setDetection] = useState<DetectionResult | null>(null)
+  const [detecting, setDetecting] = useState(false)
   const searchEndDate = selectedEndDate < selectedDate ? selectedDate : selectedEndDate
 
   async function loadCourses() {
@@ -200,7 +213,40 @@ function App() {
     setCourses((current) => [...current, added])
     setSelectedCourses((current) => [...current, added.id])
     setNewCourse({ name: '', location: '', bookingUrl: '' })
+    setDetection(null)
     setShowAdd(false)
+  }
+
+  async function detectNewCourse() {
+    if (!newCourse.bookingUrl) return
+
+    setDetecting(true)
+    setError('')
+    try {
+      const response = await fetch('/api/courses/detect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingUrl: newCourse.bookingUrl, name: newCourse.name }),
+      })
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null
+        throw new Error(payload?.error ?? 'Could not check course support')
+      }
+
+      const result = (await response.json()) as DetectionResult
+      setDetection(result)
+      setNewCourse((current) => ({
+        ...current,
+        name: current.name || result.name || '',
+        location: current.location || result.location || '',
+        bookingUrl: result.bookingUrl || current.bookingUrl,
+      }))
+    } catch (detectError) {
+      setDetection(null)
+      setError(detectError instanceof Error ? detectError.message : 'Could not check course support')
+    } finally {
+      setDetecting(false)
+    }
   }
 
   async function removeCourse(courseId: string) {
@@ -334,8 +380,30 @@ function App() {
         <form className="add-course" onSubmit={addCourse}>
           <input required placeholder="Course name" value={newCourse.name} onChange={(event) => setNewCourse({ ...newCourse, name: event.target.value })} />
           <input placeholder="Location" value={newCourse.location} onChange={(event) => setNewCourse({ ...newCourse, location: event.target.value })} />
-          <input required type="url" placeholder="Booking URL" value={newCourse.bookingUrl} onChange={(event) => setNewCourse({ ...newCourse, bookingUrl: event.target.value })} />
+          <input
+            required
+            type="url"
+            placeholder="Booking URL"
+            value={newCourse.bookingUrl}
+            onChange={(event) => {
+              setNewCourse({ ...newCourse, bookingUrl: event.target.value })
+              setDetection(null)
+            }}
+          />
+          <button type="button" className="secondary-add-button" onClick={detectNewCourse} disabled={detecting || !newCourse.bookingUrl}>
+            <Wand2 size={16} />
+            {detecting ? 'Checking' : 'Check'}
+          </button>
           <button type="submit"><Plus size={16} /> Add</button>
+          {detection && (
+            <div className={`add-course-status ${detection.status}`}>
+              <CheckCircle2 size={16} />
+              <span>
+                <strong>{detection.providerName}</strong>
+                <small>{detection.message}</small>
+              </span>
+            </div>
+          )}
         </form>
       )}
 

@@ -10,6 +10,9 @@ type TeeItUpRate = {
   dueOnlineWalking?: number
   dueOnlineRiding?: number
   allowedPlayers?: number[]
+  golfnow?: {
+    GolfFacilityId?: number
+  }
   promotion?: {
     greenFeeWalking?: number
     greenFeeRiding?: number
@@ -40,18 +43,27 @@ function centsToDollars(value: unknown) {
   return numeric > 500 ? numeric / 100 : numeric
 }
 
+function firstPrice(...values: unknown[]) {
+  for (const value of values) {
+    const price = centsToDollars(value)
+    if (price !== undefined) return price
+  }
+
+  return undefined
+}
+
 function priceFrom(slot: TeeItUpSlot) {
   const rate = slot.rates?.[0]
-  return centsToDollars(
+  return firstPrice(
     rate?.promotion?.greenFeeRiding ??
       rate?.promotion?.greenFeeWalking ??
-      rate?.promotion?.price ??
-      rate?.dueOnlineRiding ??
-      rate?.dueOnlineWalking ??
-      rate?.greenFeeRiding ??
-      rate?.greenFeeWalking ??
-      rate?.greenFee ??
-      rate?.price,
+      rate?.promotion?.price,
+    rate?.dueOnlineRiding,
+    rate?.dueOnlineWalking,
+    rate?.greenFeeRiding,
+    rate?.greenFeeWalking,
+    rate?.greenFee,
+    rate?.price,
   )
 }
 
@@ -62,7 +74,7 @@ function teeTimeBookingUrl(course: Course, startsAt: Date, slot: TeeItUpSlot, av
 
   const url = new URL(course.bookingUrl)
   const hour = startsAt.getHours()
-  const facilityId = course.provider.facilityIds[0]
+  const facilityId = slot.rates?.find((rate) => rate.golfnow?.GolfFacilityId)?.golfnow?.GolfFacilityId ?? course.provider.facilityIds[0]
   const holes = Number(slot.holes ?? 18)
   const golfers = Math.max(1, Math.min(Number(availableSpots ?? slot.maxPlayers ?? 4), 4))
 
@@ -102,10 +114,10 @@ export async function fetchTeeItUp(course: Course, date: string): Promise<Provid
     }
   }
 
-  const params = new URLSearchParams({ date })
-  for (const facilityId of course.provider.facilityIds) {
-    params.append('facilityIds', String(facilityId))
-  }
+  const params = new URLSearchParams({
+    date,
+    facilityIds: course.provider.facilityIds.join(','),
+  })
 
   const requestHeaders: Record<string, string> = {
     Accept: 'application/json',
@@ -140,9 +152,10 @@ export async function fetchTeeItUp(course: Course, date: string): Promise<Provid
       const maxPlayers = Number(slot.maxPlayers ?? Math.max(...allowedPlayers, 4))
       const availableSpots = Number(slot.playersAvail ?? slot.availablePlayers ?? maxPlayers)
       const price = priceFrom(slot)
+      const facilityId = slot.rates?.find((rate) => rate.golfnow?.GolfFacilityId)?.golfnow?.GolfFacilityId
 
       teeTimes.push({
-        id: `${course.id}-${slot.id ?? rawTime}`,
+        id: `${course.id}-${facilityId ?? 'facility'}-${slot.id ?? rawTime}`,
         courseId: course.id,
         courseName: course.name,
         provider: 'TeeItUp',

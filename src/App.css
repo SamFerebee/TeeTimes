@@ -167,13 +167,58 @@ button {
 
 .add-course {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1.6fr auto;
+  grid-template-columns: 1.3fr 1fr 1.6fr auto auto;
   gap: 10px;
   padding: 18px clamp(18px, 4vw, 48px) 0;
 }
 
 .add-course button {
   padding: 0 14px;
+}
+
+.add-course .secondary-add-button {
+  border-color: #cbd8cf;
+  background: #fff;
+  color: #23352a;
+}
+
+.add-course button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.add-course-status {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #dfe7df;
+  border-left: 4px solid #6f8f7b;
+  border-radius: 8px;
+  background: #fff;
+  padding: 10px 12px;
+}
+
+.add-course-status.manual {
+  border-left-color: #b4862b;
+}
+
+.add-course-status.blocked {
+  border-left-color: #b54639;
+}
+
+.add-course-status strong,
+.add-course-status small {
+  display: block;
+}
+
+.add-course-status strong {
+  color: #16251d;
+}
+
+.add-course-status small {
+  color: #617268;
+  margin-top: 2px;
 }
 
 .content-grid {

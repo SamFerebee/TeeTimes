@@ -7,7 +7,9 @@
     "provider": {
       "type": "foreup",
       "courseId": 23075,
-      "scheduleIds": [12738],
+      "scheduleIds": [
+        12738
+      ],
       "holes": 18
     }
   },
@@ -31,7 +33,9 @@
     "provider": {
       "type": "teeitup",
       "alias": "new-york-country-club",
-      "facilityIds": [4864],
+      "facilityIds": [
+        4864
+      ],
       "courseId": "54f14d110c8ad60378b033e7"
     }
   },
@@ -43,7 +47,9 @@
     "provider": {
       "type": "teeitup",
       "alias": "spook-rock-golf-course",
-      "facilityIds": [11400],
+      "facilityIds": [
+        11400
+      ],
       "courseId": "54f14fb40c8ad60378b06cfd"
     }
   },
@@ -51,12 +57,14 @@
     "id": "blue-hill",
     "name": "Blue Hill Golf Course",
     "location": "Pearl River, NY",
-    "bookingUrl": "https://blue-hill-golf-course-v2.book.teeitup.golf",
+    "bookingUrl": "https://blue-hill-gc-broadacres-gc.book.teeitup.com?course=6865",
     "provider": {
       "type": "teeitup",
-      "alias": "blue-hill-golf-course-v2",
-      "facilityIds": [6865],
-      "courseId": "54f14df90c8ad60378b046c7"
+      "alias": "blue-hill-gc-broadacres-gc",
+      "facilityIds": [
+        6865
+      ],
+      "courseId": "5e541191cabaac000f8042de"
     }
   },
   {
@@ -100,7 +108,9 @@
     "provider": {
       "type": "teeitup",
       "alias": "river-vale-country-club",
-      "facilityIds": [4695],
+      "facilityIds": [
+        4695
+      ],
       "courseId": "54f14cfd0c8ad60378b03225"
     }
   },
@@ -112,7 +122,9 @@
     "provider": {
       "type": "foreup",
       "courseId": 22528,
-      "scheduleIds": [11078],
+      "scheduleIds": [
+        11078
+      ],
       "holes": 18
     }
   },
@@ -124,8 +136,24 @@
     "provider": {
       "type": "foreup",
       "courseId": 22526,
-      "scheduleIds": [11075],
+      "scheduleIds": [
+        11075
+      ],
       "holes": 18
+    }
+  },
+  {
+    "id": "neshanic-valley",
+    "name": "Neshanic Valley",
+    "location": "Neshanic Station, NJ",
+    "bookingUrl": "https://somerset-group-v2.book.teeitup.com?course=7083",
+    "provider": {
+      "type": "teeitup",
+      "alias": "somerset-group-v2",
+      "facilityIds": [
+        7083
+      ],
+      "courseId": "54f14e110c8ad60378b04883"
     }
   }
 ]

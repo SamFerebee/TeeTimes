@@ -2,6 +2,7 @@ import cors from 'cors'
 import { addDays, differenceInCalendarDays, format, parse } from 'date-fns'
 import express from 'express'
 import { z } from 'zod'
+import { detectCourseProvider } from './courseDetector'
 import { loadCourses, normalizeNewCourse, saveCourses, slugify } from './courseStore'
 import { fetchCourseTeeTimes } from './providers'
 import type { Course, ProviderResult, SourceStatus } from './types'
@@ -27,10 +28,37 @@ app.get('/api/courses', async (_request, response, next) => {
   }
 })
 
+app.post('/api/courses/detect', async (request, response, next) => {
+  try {
+    const { bookingUrl, name } = z
+      .object({
+        bookingUrl: z.string().url(),
+        name: z.string().optional(),
+      })
+      .parse(request.body)
+
+    response.json(await detectCourseProvider(bookingUrl, name))
+  } catch (error) {
+    next(error)
+  }
+})
+
 app.post('/api/courses', async (request, response, next) => {
   try {
     const courses = await loadCourses()
-    const course = normalizeNewCourse(request.body)
+    const detected = await detectCourseProvider(
+      String(request.body?.bookingUrl ?? ''),
+      String(request.body?.name ?? ''),
+    )
+    const course = normalizeNewCourse({
+      ...request.body,
+      name: request.body?.name || detected.name,
+      location: request.body?.location || detected.location || '',
+      bookingUrl: detected.bookingUrl || request.body?.bookingUrl,
+      provider: request.body?.provider?.type && request.body.provider.type !== 'manual'
+        ? request.body.provider
+        : detected.provider,
+    })
     const existingIds = new Set(courses.map((item) => item.id))
     let id = slugify(course.name)
     let counter = 2
