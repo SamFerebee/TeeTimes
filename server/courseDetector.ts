@@ -139,6 +139,48 @@ function canonicalHref(html: string) {
   return html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i)?.[1]
 }
 
+function isSupportedProviderUrl(url: URL) {
+  const hostname = url.hostname.toLowerCase()
+  return (
+    hostname.includes('foreupsoftware.com') ||
+    hostname.includes('book.teeitup.') ||
+    hostname.includes('golfnow.com') ||
+    hostname.includes('teeoff.com')
+  )
+}
+
+function candidateUrlFrom(value: string, baseUrl: URL) {
+  const cleaned = value.replace(/&amp;/g, '&').trim()
+  try {
+    return new URL(cleaned, baseUrl)
+  } catch {
+    return undefined
+  }
+}
+
+function findEmbeddedBookingUrl(html: string, baseUrl: URL) {
+  const candidates = new Set<string>()
+  const attributePattern = /\b(?:src|href|action)=["']([^"']+)["']/gi
+  const urlPattern = /https?:\\?\/\\?\/[^"'<>\\\s]+/gi
+
+  for (const match of html.matchAll(attributePattern)) {
+    candidates.add(match[1])
+  }
+
+  for (const match of html.matchAll(urlPattern)) {
+    candidates.add(match[0].replace(/\\\//g, '/'))
+  }
+
+  for (const candidate of candidates) {
+    const url = candidateUrlFrom(candidate, baseUrl)
+    if (url && isSupportedProviderUrl(url)) {
+      return url.toString()
+    }
+  }
+
+  return undefined
+}
+
 function detectBlocked(url: URL): DetectionResult {
   return {
     status: 'blocked',
@@ -295,7 +337,11 @@ async function detectGolfNow(url: URL): Promise<DetectionResult> {
   }
 }
 
-export async function detectCourseProvider(bookingUrl: string, intendedName?: string): Promise<DetectionResult> {
+export async function detectCourseProvider(
+  bookingUrl: string,
+  intendedName?: string,
+  embedDepth = 0,
+): Promise<DetectionResult> {
   let url: URL
   try {
     url = new URL(bookingUrl)
@@ -321,6 +367,18 @@ export async function detectCourseProvider(bookingUrl: string, intendedName?: st
 
     if (hostname.includes('golfnow.com') || hostname.includes('teeoff.com')) {
       return await detectGolfNow(url)
+    }
+
+    if (embedDepth < 2) {
+      const html = await fetchHtml(url.toString())
+      const embeddedBookingUrl = findEmbeddedBookingUrl(html, url)
+      if (embeddedBookingUrl) {
+        const detected = await detectCourseProvider(embeddedBookingUrl, intendedName, embedDepth + 1)
+        return {
+          ...detected,
+          message: `Found an embedded ${detected.providerName} booking page. ${detected.message}`,
+        }
+      }
     }
   } catch (error) {
     return {

@@ -378,23 +378,41 @@ function App() {
 
       {showAdd && (
         <form className="add-course" onSubmit={addCourse}>
-          <input required placeholder="Course name" value={newCourse.name} onChange={(event) => setNewCourse({ ...newCourse, name: event.target.value })} />
-          <input placeholder="Location" value={newCourse.location} onChange={(event) => setNewCourse({ ...newCourse, location: event.target.value })} />
-          <input
-            required
-            type="url"
-            placeholder="Booking URL"
-            value={newCourse.bookingUrl}
-            onChange={(event) => {
-              setNewCourse({ ...newCourse, bookingUrl: event.target.value })
-              setDetection(null)
-            }}
-          />
+          <label>
+            <span>Course name</span>
+            <input required placeholder="Neshanic Valley" value={newCourse.name} onChange={(event) => setNewCourse({ ...newCourse, name: event.target.value })} />
+          </label>
+          <label>
+            <span>Location</span>
+            <input placeholder="Neshanic Station, NJ" value={newCourse.location} onChange={(event) => setNewCourse({ ...newCourse, location: event.target.value })} />
+          </label>
+          <label className="booking-url-field">
+            <span>Booking URL</span>
+            <input
+              required
+              type="url"
+              placeholder="Paste the tee-time booking page URL"
+              value={newCourse.bookingUrl}
+              onChange={(event) => {
+                setNewCourse({ ...newCourse, bookingUrl: event.target.value })
+                setDetection(null)
+              }}
+            />
+          </label>
           <button type="button" className="secondary-add-button" onClick={detectNewCourse} disabled={detecting || !newCourse.bookingUrl}>
             <Wand2 size={16} />
             {detecting ? 'Checking' : 'Check'}
           </button>
           <button type="submit"><Plus size={16} /> Add</button>
+          <div className="booking-url-help">
+            <p>Use the page where you pick a tee time, including pages with an embedded tee-time widget. General course homepages usually will not work.</p>
+            <div className="supported-platforms" aria-label="Supported live booking platforms">
+              <span>Live lookup works with</span>
+              <strong>TeeItUp</strong>
+              <strong>ForeUp</strong>
+              <strong>GolfNow / TeeOff</strong>
+            </div>
+          </div>
           {detection && (
             <div className={`add-course-status ${detection.status}`}>
               <CheckCircle2 size={16} />

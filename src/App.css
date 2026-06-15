@@ -108,13 +108,15 @@ button {
 }
 
 .search-grid label,
-.filter-control {
+.filter-control,
+.add-course label {
   display: grid;
   gap: 8px;
 }
 
 .search-grid span,
-.filter-control > span {
+.filter-control > span,
+.add-course label > span {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -170,10 +172,48 @@ button {
   grid-template-columns: 1.3fr 1fr 1.6fr auto auto;
   gap: 10px;
   padding: 18px clamp(18px, 4vw, 48px) 0;
+  align-items: end;
 }
 
 .add-course button {
   padding: 0 14px;
+}
+
+.add-course label > span {
+  color: #34473c;
+}
+
+.booking-url-help {
+  grid-column: 3 / -1;
+  display: grid;
+  gap: 8px;
+  color: #5c6c62;
+  font-size: 0.88rem;
+}
+
+.booking-url-help p {
+  margin: 0;
+}
+
+.supported-platforms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-items: center;
+}
+
+.supported-platforms span {
+  color: #5c6c62;
+  font-weight: 800;
+}
+
+.supported-platforms strong {
+  border: 1px solid #cbd8cf;
+  border-radius: 999px;
+  background: #fff;
+  color: #23352a;
+  padding: 4px 9px;
+  font-size: 0.82rem;
 }
 
 .add-course .secondary-add-button {
@@ -461,6 +501,10 @@ button {
   .search-grid,
   .add-course {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .booking-url-help {
+    grid-column: 1 / -1;
   }
 
   .tee-row {

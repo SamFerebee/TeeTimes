@@ -155,5 +155,19 @@
       ],
       "courseId": "54f14e110c8ad60378b04883"
     }
+  },
+  {
+    "id": "saxon-woods",
+    "name": "Saxon Woods",
+    "location": "Scarsdale, NY",
+    "bookingUrl": "https://westchester-county.book.teeitup.com?course=3255",
+    "provider": {
+      "type": "teeitup",
+      "alias": "westchester-county",
+      "facilityIds": [
+        3255
+      ],
+      "courseId": "5f244f9e9c7b360015fb40b6"
+    }
   }
 ]
